@@ -29,6 +29,8 @@ import path from 'path'
 import _ from 'lodash'
 import util from 'util'
 
+const TE = util.TextEncoder || TextEncoder
+
 import {
   extractMetadata, prependXAMZMeta, isValidPrefix, isValidEndpoint, isValidBucketName,
   isValidPort, isValidObjectName, isAmazonEndpoint, getScope,
@@ -1607,7 +1609,7 @@ export class Client {
       result.listOfList.push(result.list)
     }
 
-    const encoder = new util.TextEncoder()
+    const encoder = new TE()
 
     async.eachSeries(result.listOfList, (list, callback) => {
       var deleteObjects={"Delete":[{Quiet:true}], }
@@ -1624,9 +1626,10 @@ export class Client {
       })
       const builder = new xml2js.Builder({ headless: true })
       let payload = builder.buildObject(deleteObjects)
+      const payload_str = payload
       payload = encoder.encode(payload)
       const headers = {}
-      const md5digest = Crypto.createHash('md5').update(payload).digest()
+      const md5digest = Crypto.createHash('md5').update(payload_str).digest()
 
       headers['Content-MD5'] = md5digest.toString('base64')
 
@@ -2319,7 +2322,7 @@ export class Client {
         }
       }
     }
-    const encoder = new util.TextEncoder()
+    const encoder = new TE()
     const headers ={}
     const builder = new xml2js.Builder({ headless:true,renderOpts:{'pretty':false},})
     let payload = builder.buildObject(taggingConfig)
@@ -2540,7 +2543,7 @@ export class Client {
     const method = 'PUT'
     const query="lifecycle"
 
-    const encoder = new util.TextEncoder()
+    const encoder = new TE()
     const headers ={}
     const builder = new xml2js.Builder({ rootName:'LifecycleConfiguration', headless:true, renderOpts:{'pretty':false},})
     let payload = builder.buildObject(policyConfig)
