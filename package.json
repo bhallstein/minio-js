@@ -9,8 +9,7 @@
     "lint": "gulp lint",
     "prepublishOnly": "gulp test",
     "functional": "gulp functionalTest",
-    "browserify": "gulp browserify",
-    "prepare": "npm run compile"
+    "browserify": "gulp browserify"
   },
   "repository": {
     "type": "git",
